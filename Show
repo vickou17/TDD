@@ -1,0 +1,142 @@
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.SQLWarning;
+import java.sql.Statement;
+import be.isib.util.InOut;
+import java.sql.Time;
+import java.text.ParseException;
+
+
+
+public class Heure {
+
+int Heure;
+int Id;
+String table;
+
+
+
+Statement stmt = con.createStatement();
+
+--->Get Id Emp 
+
+
+ResultSet rs = (ResultSet) stmt.executeQuery(queryString);
+
+if (!rs.next()) {
+            System.out.println("NEANT");
+        } else {
+            System.out.println("");
+
+}
+
+        do {
+    
+
+            Id = rs.getInt ("Id_Emp");
+                   
+            Heure = rs.getInt ("Heure");
+                System.Out.println("Nombre d'heures de l'employé"+Id+":"+Heure);
+            
+
+}
+   while (rs.next());
+   
+stmt.close();
+}
+
+
+public class ShowEmplyé {
+    
+int Id_emp;
+int Id_Ind;
+String Nom;
+String Prenom;
+String Statut;
+int nb_heure;
+    
+    
+    
+
+    
+Statement stmt = con.createStatement();
+
+--->Get Industrie
+
+
+ResultSet rs = (ResultSet) stmt.executeQuery(queryString);
+
+if (!rs.next()) {
+            System.out.println("NEANT");
+        } else {
+            System.out.println("");
+
+}
+
+        do {
+              Id_emp = rs.getInt("Id_Emp");
+              Id_Ind = rs.getInt("Id-Ind");
+              Nom = rs.getString("Nom");
+              Prenom = rs.getString("Prenom");
+              Statut = rs.getString("Statut");
+              nb_heure = rs.getInt("nb_heure");
+              
+                System.outprintln("Id employé :"+Id_emp+" | Nom :"+Nom+" | Prenom :"+Prenom+" | Statut :"+Statut+" | Nombre d'heures :"+nb_heure);
+                
+                while (rs.next());
+                stmt.close;
+}
+        
+        
+
+}
+
+
+public class ShowCadre {
+    
+    
+    
+ Statement stmt = con.createStatement();
+
+ ---->Get Employeee
+ 
+ 
+        ResultSet rs = (ResultSet) stmt.executeQuery(queryString);
+        
+        
+        if (!rs.next()) {
+            System.out.println("Neant");
+        } else {
+            System.out.println("");
+        do {
+            
+            Id_emp = rs.getInt("Id_emp");
+            Nom = rs.getString("Nom");
+            Prenom = rs.getString("Prenom");
+            Statut = rs.getStatut("Statut");
+            
+            System.outprintln("Id de l'employé :"+Id_emp+" | Nom : "+Nom+" | Prenom :"+Prenom+" | Statut : "+Statut);
+            
+            while (rs.next());
+            
+            stmt.close;
+        }
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
