@@ -166,6 +166,43 @@ Statement stmt = con.createStatement();
     
 }
 
+public class ShowProject {
+    
+int id_ind;
+int id_project;
+String nom_project;
+    
+    
+    
+
+    Statement stmt = con.createStatement();
+
+ String queryString =
+ 
+ 
+        ResultSet rs = (ResultSet) stmt.executeQuery(queryString);
+        
+        
+        if (!rs.next()) {
+            System.out.println("Neant");
+        } else {
+            System.out.println("");
+        do {
+            id_ind = rs.getInt("id_ind");
+            id_project = rs.getInt("id_project");
+            nom_project = rs.getString("nom_project");
+            
+            
+                System.out.println("Nom du project :"+nom_project+" | Id du project :"+id_project+" | Id de l'industrie :"+id_ind);
+                
+                while (rs.next());
+                stmt.close;
+        }
+            
+            
+        }
+    
+}
 
 
 
