@@ -130,7 +130,41 @@ public class ShowCadre {
 }
 
 
+public class ShowIndustrie {
+    
+int Id_ind;
+String Nom_ind;
+    
+}
+    
+Statement stmt = con.createStatement();
 
+ ---->Get Industrie
+ 
+ 
+        ResultSet rs = (ResultSet) stmt.executeQuery(queryString);
+        
+        
+        if (!rs.next()) {
+            System.out.println("Neant");
+        } else {
+            System.out.println("");
+        do {    
+
+            Id_ind = rs.getInt("Id_ind");
+            Nom_ind = rs.getString("Nom_ind");
+
+                System.out.println("Nom de l'industrie :"+Nom_ind+" | Id de l'industrie :"+Id_ind);
+
+                    while (rs.next());
+                    stmt.close;
+
+}
+    
+    
+    
+    
+}
 
 
 
