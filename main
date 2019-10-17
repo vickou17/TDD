@@ -1,0 +1,102 @@
+package tdd;
+
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class main {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		
+		int i;
+		ArrayList<String> chosenTab = new ArrayList<String>();
+		ArrayList<String> chosenData = new ArrayList<String>();
+		String verifString;
+		int verifId;
+		{
+		System.out.println("Menu : "
+				+ "\n 1. Faire la moyenne des donn�es. "
+				+ "\n 2. Faire la somme des donn�es. "
+				+ "\n 3. Faire la variance des donn�es."
+				+ "\n 4. Faire l'�cart type des donn�es."
+				+ "\n 5. Faire le maximum."
+				+ "\n 6. Faire le minimum."
+				+ "\n 7. Selection de donn�es"
+				+ "\n -- Selectionnez la fonction que vous souhaitez : ");
+		Scanner scan = new Scanner(System.in);
+		System.out.println("\n");
+		i=scan.nextInt();
+		switch(i) {
+		case 1: 
+			System.out.println("Moyenne");
+			break;
+		
+		case 2: 
+			System.out.println("Somme");
+			break;
+		
+		case 3: 
+			System.out.println("Variance");
+			break;
+		
+		case 4: 
+			System.out.println("Ecart-type");
+			break;
+		
+		case 5: 
+			System.out.println("Maximum");
+			break;
+		
+		case 6: 
+			System.out.println("Minimum");
+			break;
+			
+	/*	case 7 :
+			System.out.println("Selection de donn�es. \n");
+			System.out.println("Dans quelle table souhaitez vous travailler ? \n");
+			System.out.println("1. Industrie (industrie) // 2. Employ� (employe) // 3. Projet (projet) ");
+			do {
+			verifString = new Scanner(System.in).next();
+			}while(!(
+					verifString.equals("industrie")
+					|| verifString.equals("employe")
+					|| verifString.equals("projet")
+					));
+			chosenTab.add(verifString);
+			System.out.println("Sur quels donn�es de la table souhaitez vous travailler");
+			do {
+				switch(chosenTab.get(0)) {
+				
+				case "industrie" :
+					System.out.println("S�lectionnez l'entreprise sur laquelle vous souhaitez travailler : ");
+					int idMax=0;
+					//liste des entreprises avec ID
+					do {
+						verifId = new Scanner(System.in).nextInt();
+						}while((verifId>idMax)||(verifId<1)); //On v�rifie la validit� du nombre
+						chosenData.add(Integer.toString(verifId));
+					break;
+					
+				case "employe" :
+					System.out.println("S�lectionnez le ou les employ�s sur lesquels vous voulez travailler :");
+					//liste des employ�s avec id
+					do {
+						
+					}
+					
+				
+				
+					default :
+						System.out.println("Erreur, retour au menu");
+						break;
+				}
+			}while();
+			break;
+		
+		}
+		}while(i!=0);
+*/
+	}
+		}
+}
+}
