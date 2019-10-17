@@ -13,11 +13,23 @@ import java.text.ParseException;
 
 
 
+int heure;
+int id_emp;
+int id_ind;
+String nom_ind;
+String nom;
+String prenom;
+String statut;
+int nb_heure;
+int id_project;
+String nom_project;
+
+
+
+
 public class Heure {
 
-int Heure;
-int Id;
-String table;
+
 
 
 
@@ -38,10 +50,10 @@ if (!rs.next()) {
         do {
     
 
-            Id = rs.getInt ("Id_Emp");
+            id_emp = rs.getInt ("id_emp");
                    
-            Heure = rs.getInt ("Heure");
-                System.Out.println("Nombre d'heures de l'employé"+Id+":"+Heure);
+            heure = rs.getInt ("heure");
+                System.Out.println("Nombre d'heures de l'employé"+id_emp+":"+heure);
             
 
 }
@@ -51,14 +63,9 @@ stmt.close();
 }
 
 
-public class ShowEmplyé {
+public class ShowEmployé {
     
-int Id_emp;
-int Id_Ind;
-String Nom;
-String Prenom;
-String Statut;
-int nb_heure;
+
     
     
     
@@ -79,14 +86,14 @@ if (!rs.next()) {
 }
 
         do {
-              Id_emp = rs.getInt("Id_Emp");
-              Id_Ind = rs.getInt("Id-Ind");
-              Nom = rs.getString("Nom");
-              Prenom = rs.getString("Prenom");
-              Statut = rs.getString("Statut");
+              id_emp = rs.getInt("id_emp");
+              id_ind = rs.getInt("id-ind");
+              nom = rs.getString("nom");
+              prenom = rs.getString("prenom");
+              statut = rs.getString("statut");
               nb_heure = rs.getInt("nb_heure");
               
-                System.outprintln("Id employé :"+Id_emp+" | Nom :"+Nom+" | Prenom :"+Prenom+" | Statut :"+Statut+" | Nombre d'heures :"+nb_heure);
+                System.outprintln("Id employé :"+id_emp+" | Nom :"+nom+" | Prenom :"+prenom+" | Statut :"+statut+" | Nombre d'heures :"+nb_heure);
                 
                 while (rs.next());
                 stmt.close;
@@ -115,12 +122,12 @@ public class ShowCadre {
             System.out.println("");
         do {
             
-            Id_emp = rs.getInt("Id_emp");
-            Nom = rs.getString("Nom");
-            Prenom = rs.getString("Prenom");
-            Statut = rs.getStatut("Statut");
+            id_emp = rs.getInt("id_emp");
+            nom = rs.getString("nom");
+            prenom = rs.getString("prenom");
+            statut = rs.getStatut("statut");
             
-            System.outprintln("Id de l'employé :"+Id_emp+" | Nom : "+Nom+" | Prenom :"+Prenom+" | Statut : "+Statut);
+            System.outprintln("Id de l'employé :"+id_emp+" | Nom : "+nom+" | Prenom :"+prenom+" | Statut : "+statut);
             
             while (rs.next());
             
@@ -132,8 +139,7 @@ public class ShowCadre {
 
 public class ShowIndustrie {
     
-int Id_ind;
-String Nom_ind;
+
     
 }
     
@@ -151,10 +157,10 @@ Statement stmt = con.createStatement();
             System.out.println("");
         do {    
 
-            Id_ind = rs.getInt("Id_ind");
-            Nom_ind = rs.getString("Nom_ind");
+            id_ind = rs.getInt("id_ind");
+            nom_ind = rs.getString("nom_ind");
 
-                System.out.println("Nom de l'industrie :"+Nom_ind+" | Id de l'industrie :"+Id_ind);
+                System.out.println("Nom de l'industrie :"+nom_ind+" | Id de l'industrie :"+id_ind);
 
                     while (rs.next());
                     stmt.close;
@@ -168,9 +174,7 @@ Statement stmt = con.createStatement();
 
 public class ShowProject {
     
-int id_ind;
-int id_project;
-String nom_project;
+
     
     
     
