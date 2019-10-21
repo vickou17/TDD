@@ -25,6 +25,7 @@ public class Fonction {
      */
 
     private static Connexion con = null;
+    
     static double x = 0;
 
 
@@ -37,7 +38,7 @@ public class Fonction {
         x=variance();
         System.out.println("La variance est:" + x);*/
     	
-    	System.out.println("ok");
+
         con = new Connexion("db_tdd","root","");
         String employe = "employe";
         String result;
@@ -63,9 +64,65 @@ public class Fonction {
         //result=getEcartTypeHeureEmployeEntreprise(1);
         //System.out.println(result);
         
-        result=getEcartTypeHeureEmployeProjet(1);
-        System.out.println(result);
-
+        //result=getEcartTypeHeureEmployeProjet(1);
+        //System.out.println(result);
+        
+        Scanner scan = new Scanner(System.in);
+        int i;
+        int userChoice;
+        do {
+      
+		
+		System.out.println("\n \t Menu"
+				+ "\n 1. Voir les données des employés d'une entreprise."
+				+ "\n 2. Voir les données des employés pour un projet.");
+		  i=scan.nextInt();
+		switch(i) {
+		case 1: 
+			System.out.println("Sélectionnez l'entreprise souhaitée (entrez l'id)");
+			afficherLignes("Industrie");
+			userChoice=scan.nextInt();
+			if(con.verifValiditeID(userChoice, "industrie")) {
+			System.out.println("\n Moyenne d'heure des employés pour l'entreprise :"+getMoyenneHeureEmployeEntreprise(userChoice));
+			System.out.println("\n Somme d'heure des employés pour l'entreprise : "+getSommeHeureEmployeEntreprise(userChoice));
+			System.out.println("\n Variance d'heure des employés pour l'entreprise :"+getVarianceHeureEmployeEntreprise(userChoice));
+			System.out.println("\n Ecart-Type d'heure des employés pour l'entreprise : "+getEcartTypeHeureEmployeEntreprise(userChoice));
+			} else {
+				System.out.println("Erreur, veuillez entrer un ID valide");
+			}
+			break;
+		
+		case 2: 
+			System.out.println("Séléctionnez le projet souhaité (entrez l'id) ");
+			afficherLignes("Projet");
+			userChoice=scan.nextInt();
+			if(con.verifValiditeID(userChoice, "projet")) {
+				System.out.println("\n Moyenne d'heure des employés pour le projet :"+getMoyenneHeureEmployeProjet(userChoice));
+				System.out.println("\n Somme d'heure des employés pour le projet : "+getSommeHeureEmployeProjet(userChoice));
+				System.out.println("\n Variance d'heure des employés pour le projet :"+getVarianceHeureEmployeProjet(userChoice));
+				System.out.println("\n Ecart-Type d'heure des employés pour le projet : "+getEcartTypeHeureEmployeProjet(userChoice));
+			} else {
+				System.out.println("Erreur, veuillez entrer un ID valide.");
+			}
+			
+			break;
+		
+		case 3: 
+			break;
+		
+		case 4: 
+			System.out.println("Ecart-type");
+			break;
+		
+		case 5: 
+			System.out.println("Maximum");
+			break;
+		
+		case 6: 
+			System.out.println("Minimum");
+			break;
+    }
+        }while(i<6 && i>0);
     }
 
     /**

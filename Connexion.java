@@ -230,6 +230,51 @@ public class Connexion {
         // Retourner l'ArrayList
         return resultStatement;
     }
+    
+    /**
+     * Methode qui verifie l'integrité de l'id en entrée pour la table donnée
+     * @return 
+     * @throws java.sql.SQLException
+     * @author Loic
+     */
+    public boolean verifValiditeID(int id, String table) throws SQLException {
+    	boolean validity=false;
+    	
+        // récupération de l'ordre de la requete
+    	switch(table) {
+    	
+    	case "industrie":
+        rset = stmt.executeQuery("SELECT id_ind FROM industrie");
+        break;
+        
+    	case "projet":
+        rset = stmt.executeQuery("SELECT id_projet FROM projet");
+        break;
+        
+    	case "employe":
+    	rset = stmt.executeQuery("SELECT id_emp FROM employe");
+    	break;
+        
+        
+    	}
+        // récupération du résultat de l'ordre
+        rsetMeta = rset.getMetaData();
+
+        // creation d'une ArrayList de String
+        ArrayList<String> liste;
+        liste = new ArrayList<String>();
+
+        // tant qu'il reste une ligne 
+        while (rset.next()) {
+       
+            if(Integer.parseInt(rset.getString(1))==id) {
+            	validity=true;
+            }
+        }
+
+        // Retourner l'ArrayList
+        return validity;
+    }
 
     /**
      * Méthode qui execute une requete de MAJ en parametre
