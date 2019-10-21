@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package fonction;
+package testTDD;
 import java.util.Scanner;
 import java.lang.Math;
 import java.awt.EventQueue;
@@ -32,27 +32,50 @@ public class Fonction {
         // TODO code application logic here
         /*x=somme();
         System.out.println("La somme est:" + x);
-
         x=moyenne();
         System.out.println("La moyenne est:" + x);
-
         x=variance();
         System.out.println("La variance est:" + x);*/
-
+    	
+    	System.out.println("ok");
         con = new Connexion("db_tdd","root","");
         String employe = "employe";
-        afficherLignes(employe);
+        String result;
+        
+        //result=getSommeHeureEmployeEntreprise(1);
+        //System.out.println(result);
+        
+        //result=getSommeHeureEmployeProjet(1);
+        //System.out.println(result);
+        
+        //result=getMoyenneHeureEmployeEntreprise(1);
+      	//System.out.println(result);
+        
+        //result=getMoyenneHeureEmployeProjet(1);
+        //System.out.println(result);
+        
+        //result=getVarianceHeureEmployeEntreprise(1);
+        //System.out.println(result);
+        
+        //result=getVarianceHeureEmployeProjet(1);
+        //System.out.println(result);
+        
+        //result=getEcartTypeHeureEmployeEntreprise(1);
+        //System.out.println(result);
+        
+        result=getEcartTypeHeureEmployeProjet(1);
+        System.out.println(result);
 
     }
 
     /**
-     * Afficher les lignes de la table sÃ©lectionnÃ©e
+     * Afficher les lignes de la table sélectionnée
      */
     public static void afficherLignes(String nomTable) {
 
         try {
             ArrayList<String> liste;
-            // recuperer la liste de la table sÃ©lectionnÃ©e
+            // recuperer la liste de la table sélectionnée
             String requeteSelectionnee = "select * from " + nomTable + ";";
             liste = con.remplirChampsRequete(requeteSelectionnee);
 
@@ -72,6 +95,206 @@ public class Fonction {
 
         }
     }
+    
+    /**Retourne la somme d'heures travaillée par l'ensemble des employés dans une industrei
+     * 
+     * @author Loic
+     * @param idEntreprise
+     * @return
+     */
+    public static String getSommeHeureEmployeEntreprise(int idEntreprise) {
+    	
+        String resultStatement = null;
+        try {
+        
+            // recuperer la liste de la table sélectionnée
+            String requeteSelectionnee = "SELECT SUM(nb_heure) AS somme FROM employe INNER JOIN industrie ON id_ind='"+idEntreprise+"'";
+            resultStatement = con.recupResultatRequete(requeteSelectionnee);
+
+            // afficher les lignes de la requete selectionnee a partir de la liste
+
+            
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+        return resultStatement;
+    }
+    
+    
+    /**Retourne le nombre d'heures passés par tous les employés sur un même projet
+     * 
+     * @author Loic
+     * @param idEntreprise
+     * @return
+     */
+    public static String getSommeHeureEmployeProjet(int idProj) {
+    	
+        String resultStatement = null;
+        try {
+        
+            // recuperer la liste de la table sélectionnée
+            String requeteSelectionnee = "SELECT SUM(nb_heure) AS somme FROM projet INNER JOIN intermediaire ON fk_id_projet='"+idProj+"' INNER JOIN employe ON fk_id_emp = id_emp";
+            resultStatement = con.recupResultatRequete(requeteSelectionnee);
+
+            // afficher les lignes de la requete selectionnee a partir de la liste
+
+            
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+        return resultStatement;
+    }
+    
+    /**Retourne la moyenne d'heures travaillée par l'ensemble des employés dans une industrei
+     * 
+     * @author Loic
+     * @param idEntreprise
+     * @return
+     */
+    public static String getMoyenneHeureEmployeEntreprise(int idEntreprise) {
+    	
+        String resultStatement = null;
+        try {
+        
+            // recuperer la liste de la table sélectionnée
+            String requeteSelectionnee = "SELECT AVG(nb_heure) AS somme FROM employe INNER JOIN industrie ON id_ind='"+idEntreprise+"'";
+            resultStatement = con.recupResultatRequete(requeteSelectionnee);
+
+            // afficher les lignes de la requete selectionnee a partir de la liste
+
+            
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+        return resultStatement;
+    }
+    
+    /**Retourne la moyenne d'heures passés par tous les employés sur un même projet
+     * 
+     * @author Loic
+     * @param idEntreprise
+     * @return
+     */
+    public static String getMoyenneHeureEmployeProjet(int idProj) {
+    	
+        String resultStatement = null;
+        try {
+        
+            // recuperer la liste de la table sélectionnée
+            String requeteSelectionnee = "SELECT AVG(nb_heure) AS somme FROM projet INNER JOIN intermediaire ON fk_id_projet='"+idProj+"' INNER JOIN employe ON fk_id_emp = id_emp";
+            resultStatement = con.recupResultatRequete(requeteSelectionnee);
+
+            // afficher les lignes de la requete selectionnee a partir de la liste
+
+            
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+        return resultStatement;
+    }
+    
+    /**Retourne la variance d'heures travaillées par l'ensemble des employés dans une industrie
+     * 
+     * @author Loic
+     * @param idEntreprise
+     * @return
+     */
+    public static String getVarianceHeureEmployeEntreprise(int idEntreprise) {
+    	
+        String resultStatement = null;
+        try {
+            ArrayList<String> listeHeure;
+            // recuperer la liste de la table sélectionnée
+            String requeteSelectionnee = "SELECT nb_heure FROM employe INNER JOIN industrie ON id_ind='"+idEntreprise+"'";
+            
+            listeHeure = con.remplirChampsRequete(requeteSelectionnee);
+            double somme=0;
+            double moyenneHeure = Double.parseDouble(getMoyenneHeureEmployeEntreprise(idEntreprise));
+            // afficher les lignes de la requete selectionnee a partir de la liste
+
+            for(int i = 0; i < listeHeure.size(); i++)
+            {
+                somme = Math.pow((Double.parseDouble(listeHeure.get(i))-moyenneHeure),2)+somme;
+            }
+            
+            resultStatement=Double.toString(somme/listeHeure.size());
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+        return resultStatement;
+    }
+    
+    /**Retourne la variance d'heures travaillées par l'ensemble des employés sur un projet
+     * 
+     * @author Loic
+     * @param idEntreprise
+     * @return
+     */
+    public static String getVarianceHeureEmployeProjet(int idProj) {
+    	
+        String resultStatement = null;
+        try {
+            ArrayList<String> listeHeure;
+            // recuperer la liste de la table sélectionnée
+            String requeteSelectionnee = "SELECT nb_heure FROM projet INNER JOIN intermediaire ON fk_id_projet='"+idProj+"' INNER JOIN employe ON fk_id_emp = id_emp";
+            
+            listeHeure = con.remplirChampsRequete(requeteSelectionnee);
+            double somme=0;
+            double moyenneHeure = Double.parseDouble(getMoyenneHeureEmployeProjet(idProj));
+            // afficher les lignes de la requete selectionnee a partir de la liste
+
+            for(int i = 0; i < listeHeure.size(); i++)
+            {
+                somme = Math.pow((Double.parseDouble(listeHeure.get(i))-moyenneHeure),2)+somme;
+            }
+            
+            resultStatement=Double.toString(somme/listeHeure.size());
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+        return resultStatement;
+    }
+    
+    /**Retourne l'écart type d'heures travaillées par l'ensemble des employés dans une industrie
+     * 
+     * @author Loic
+     * @param idEntreprise
+     * @return
+     */
+    public static String getEcartTypeHeureEmployeEntreprise(int idEntreprise) {
+    	
+        String resultStatement = null;
+        resultStatement=Double.toString(Math.sqrt(Double.parseDouble(getVarianceHeureEmployeEntreprise(idEntreprise))));
+        return resultStatement;
+    }
+    
+    /**Retourne l'écart type d'heures travaillées par l'ensemble des employés sur un projet
+     * 
+     * @author Loic
+     * @param idEntreprise
+     * @return
+     */
+    public static String getEcartTypeHeureEmployeProjet(int idProjet) {
+    	
+        String resultStatement = null;
+        resultStatement=Double.toString(Math.sqrt(Double.parseDouble(getVarianceHeureEmployeProjet(idProjet))));
+        return resultStatement;
+    }
+    
+    
+
 
     public static double somme(){
         System.out.println("Entrez le nombre de valeurs que vous souhaitez rentrer:");
@@ -80,7 +303,7 @@ public class Fonction {
         double val = 0;
         int i = 0;
         while (i<n){
-            System.out.println("Valeur nÂ°:"+ (i+1));
+            System.out.println("Valeur n°:"+ (i+1));
             scan = new Scanner(System.in);
             val += scan.nextFloat();
             i+=1;
@@ -97,7 +320,7 @@ public class Fonction {
         double val = 0;
         int i = 0;
         while (i<n){
-            System.out.println("Valeur nÂ°:"+ (i+1) +"\n");
+            System.out.println("Valeur n°:"+ (i+1) +"\n");
             scan = new Scanner(System.in);
             val += scan.nextDouble();
             i+=1;
@@ -121,7 +344,7 @@ public class Fonction {
         double resultat = 0;
         int i = 0;
         while (i<n){
-            System.out.println("Valeur nÂ°:"+ (i+1) +"\n");
+            System.out.println("Valeur n°:"+ (i+1) +"\n");
             scan = new Scanner(System.in);
             val[i] = scan.nextDouble();
             somme += val[i];
