@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package fonction;
+package tddVickou;
 
-import static fonction.Fonction.getMoyenneHeureEmployeProjet;
+import static tddVickou.Fonction.getMoyenneHeureEmployeProjet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -19,7 +19,7 @@ import java.lang.reflect.Array;
  */
 public class Salaire {
     
-    //Param√®tres
+    //ParamËtres
     private static Fonction func = new Fonction();
     private static Connexion con = null;
     
@@ -28,11 +28,11 @@ public class Salaire {
     //Fonctions
     public void menuSalaire() throws SQLException, ClassNotFoundException{
         System.out.println("1. Retour au menu principal");
-        System.out.println("2. Calcul des primes par employ√©");
+        System.out.println("2. Calcul des primes par employÈ");
         System.out.println("3. Salaire mensuel moyen par entreprise");
         System.out.println("4. Salaire mensuel moyen par sexe");
         System.out.println("5. Salaire mensuel moyen par statut");
-        System.out.println("6. Salaire par employ√©\n");
+        System.out.println("6. Salaire par employÈ\n");
         System.out.print("Votre choix: ");
   
         Scanner scan = new Scanner(System.in);
@@ -55,21 +55,44 @@ public class Salaire {
                 salaire_statut();
                 break;
             case 6:
-                salaire_employ√©();
+                salaire_employe();
                 break;
         }
+    }
+    
+    public void salaire_sexe() throws SQLException, ClassNotFoundException {
+        con = new Connexion("db_tdd","root","");
+        int choix = 0;
+        
+        System.out.println("1. Masculin");
+        System.out.println("2. FÈminin\n");
+        System.out.print("Votre choix: ");
+        Scanner scan = new Scanner(System.in);
+        choix = scan.nextInt();
+        
+        switch(choix){
+            case 1:
+                salaire_cond("employe","sexe", "M");
+                break;
+            case 2:
+                salaire_cond("employe","sexe","F");
+                break;
+        }
+        
     }
     
     
     
     
-    
-    public void salaire_employ√©() throws SQLException, ClassNotFoundException {
+    /**
+     *Menu permettant de choisir le salaire pour un employe ou tous les employÈs
+     */
+    public void salaire_employe() throws SQLException, ClassNotFoundException {
         con = new Connexion("db_tdd","root","");
         
         System.out.println("1. Retour au menu Salaire");
-        System.out.println("2. Salaire de tous les employ√©s");
-        System.out.println("3. Salaire d'un seul employ√©\n");
+        System.out.println("2. Salaire de tous les employÈs");
+        System.out.println("3. Salaire d'un seul employÈ\n");
         System.out.print("Votre choix: ");
         
         Scanner scan = new Scanner(System.in);
@@ -80,596 +103,17 @@ public class Salaire {
                 menuSalaire();
                 break;
             case 2:
-                sal_employ√©s("employe");
+                sal_employes("employe");
                 break;
             case 3:
-                sal_employ√©("employe");
+                sal_employe("employe");
                 break;
         }
     }
     
-    
-    /**
-     * Afficher les lignes de la table s√©lectionn√©e
-     */
-    public void calcul_prime(String nomTable) throws SQLException, ClassNotFoundException {
-        con = new Connexion("db_tdd","root","");
-        
-        try {
-            ArrayList<String> heure;
-            ArrayList<String> statut;
-            ArrayList<String> liste;
-            double prime = 0;
-            int comp1,comp2 = 0;
-            
-            // recuperer la liste de la table s√©lectionn√©e
-            String requeteSelectionnee = "select nb_heure from " + nomTable + ";";
-            heure = con.remplirChampsRequete(requeteSelectionnee);
-            
-            String reqSelectionnee = "select statut from " + nomTable + ";";
-            statut = con.remplirChampsRequete(reqSelectionnee);
-            
-            String req = "select nom, prenom, statut from " + nomTable + ";";
-            liste = con.remplirChampsRequete(req);
-
-            // afficher les lignes de la requete selectionnee a partir de la liste
-            String[] array = new String[heure.size()]; // Liste
-            double[] tab = new double[heure.size()]; //Nombre d'heures
-            double[] tab3 = new double[heure.size()]; // Nombre d'heures suppl√©mentaires
-            String[] tab2 = new String[heure.size()]; // Statut
-            
-            for(int i = 0; i < heure.size(); i++)
-            {
-                array[i] = liste.get(i);
-                
-                Scanner st = new Scanner(heure.get(i));
-                while (!st.hasNextDouble())
-                {
-                    st.next();
-                }
-                tab[i] = st.nextDouble();
-                //System.out.println(tab[i]);
-                
-                //tab[i] = Array.getDouble(heure, i);
-                tab2[i] = statut.get(i);
-                comp1 = tab2[i].compareTo("Stagiaire");
-                if(comp1 <= 1){
-                    tab3[i] = tab[i] - 35;
-                    if(tab3[i]<=0){ prime = 0;}
-                    else{
-                        prime = tab3[i]*20;
-                    }
-                    
-                }
-                comp2 = tab2[i].compareTo("Cadre");
-                if(comp2 <= 1){
-                    tab3[i] = tab[i] - 45;
-                    if(tab3[i]<=0){ prime = 0;}
-                    else{
-                        prime = tab3[i]*80;
-                    }
-                }
-                comp1 = tab2[i].compareTo("Employe");
-                if(comp1 <= 1){
-                    tab3[i] = tab[i] - 40;
-                    if(tab3[i]<=0){ prime = 0;}
-                    else{
-                        prime = tab3[i]*(62.5);
-                    }
-                }
-                
-                //System.out.println(liste.get(i));
-                System.out.println(array[i] + "Prime: " + prime + "‚Ç¨/mois\n");
-                
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-
-        }
-    }
-    
-    
-    
-    
-    /**
-     * Afficher les lignes de la table s√©lectionn√©e
-     */
-    public static void sal_employ√©s(String nomTable) {
-
-        try {
-            ArrayList<String> heure;
-            ArrayList<String> statut;
-            ArrayList<String> liste;
-            double sal = 0;
-            int comp1,comp2 = 0;
-            
-            // recuperer la liste de la table s√©lectionn√©e
-            String requeteSelectionnee = "select nb_heure from " + nomTable + ";";
-            heure = con.remplirChampsRequete(requeteSelectionnee);
-            
-            String reqSelectionnee = "select statut from " + nomTable + ";";
-            statut = con.remplirChampsRequete(reqSelectionnee);
-            
-            String req = "select nom, prenom, statut from " + nomTable + ";";
-            liste = con.remplirChampsRequete(req);
-
-            // afficher les lignes de la requete selectionnee a partir de la liste
-            String[] array = new String[heure.size()]; // Liste
-            double[] tab = new double[heure.size()]; //Nombre d'heure
-            String[] tab2 = new String[heure.size()]; // Statut
-            
-            for(int i = 0; i < heure.size(); i++)
-            {
-                array[i] = liste.get(i);
-                
-                Scanner st = new Scanner(heure.get(i));
-                while (!st.hasNextDouble())
-                {
-                    st.next();
-                }
-                tab[i] = st.nextDouble();
-                
-                tab2[i] = statut.get(i);
-                comp1 = tab2[i].compareTo("Stagiaire");
-                if((comp1 == 1) || (comp1 == 0)){
-                    sal = tab[i]*20;
-                }
-                comp2 = tab2[i].compareTo("Cadre");
-                if((comp2 == 1) || (comp2 == 0)){
-                    sal = tab[i]*80;
-                }
-                comp1 = tab2[i].compareTo("Employe");
-                if((comp1 == 1) || (comp1 == 0)){
-                    sal = tab[i]*(62.5);
-                }
-                
-                
-                System.out.println(array[i] + sal + "‚Ç¨/mois\n");
-                
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-
-        }
-    }
-    
-    
-    /**
-     * Afficher les lignes de la table s√©lectionn√©e
-     */
-    public static void sal_employ√©(String nomTable) {
-
-        try {
-            ArrayList<String> heure;
-            ArrayList<String> statut;
-            ArrayList<String> liste;
-            ArrayList<String> affiche;
-            ArrayList<String> num_id;
-            
-            double sal = 0;
-            int comp1,comp2 = 0;
-            int id;
-            
-            String reqListe = "select id_emp, nom, prenom from " + nomTable + ";";
-            affiche = con.remplirChampsRequete(reqListe);
-
-            //Afficher les lignes de la requ√™te s√©lectionn√©e
-            String[] aff = new String[affiche.size()]; // Affichage liste
-
-            for(int i = 0; i < affiche.size(); i++)
-            {
-                System.out.print(affiche.get(i)); 
-            }
-            System.out.println();
-            
-            System.out.print("Saisissez l'id de l'employ√©: ");
-            Scanner scan = new Scanner(System.in);
-            id = scan.nextInt();
-            // recuperer la liste de la table s√©lectionn√©e
-            String requeteSelectionnee = "select nb_heure from " + nomTable + ";";
-            heure = con.remplirChampsRequete(requeteSelectionnee);
-            
-            String reqSelectionnee = "select statut from " + nomTable + ";";
-            statut = con.remplirChampsRequete(reqSelectionnee);
-            
-            String req = "select nom, prenom, statut from " + nomTable + ";";
-            liste = con.remplirChampsRequete(req);
-            
-            String requ = "select id_emp from " + nomTable + ";";
-            num_id = con.remplirChampsRequete(requ);
-
-            // afficher les lignes de la requ√™te s√©lectionn√©e a partir de la liste
-            String[] array = new String[heure.size()]; // Liste
-            double[] tab = new double[heure.size()]; // Nombre d'heure
-            String[] tab2 = new String[heure.size()]; // Statut
-            int[] tab3 = new int[heure.size()]; // Statut
-            
-            for(int i = 0; i < heure.size(); i++)
-            {
-                array[i] = liste.get(i);
-                
-                Scanner st = new Scanner(heure.get(i));
-                while (!st.hasNextDouble())
-                {
-                    st.next();
-                }
-                tab[i] = st.nextDouble();
-                //System.out.println(tab[i]);
-                
-                Scanner str = new Scanner(num_id.get(i));
-                while (!str.hasNextInt())
-                {
-                    str.next();
-                }
-                tab3[i] = str.nextInt();
-                
-                tab2[i] = statut.get(i);
-                comp1 = tab2[i].compareTo("Stagiaire");
-                if((comp1 == 1) || (comp1 == 0)){
-                    sal = tab[i]*20;
-                }
-                comp2 = tab2[i].compareTo("Cadre");
-                if((comp2 == 1) || (comp2 == 0)){
-                    sal = tab[i]*80;
-                }
-                comp1 = tab2[i].compareTo("Employe");
-                if((comp1 == 1) || (comp1 == 0)){
-                    sal = tab[i]*(62.5);
-                }
-                if(tab3[i] == id){
-                    System.out.println(array[i] + sal + "‚Ç¨/mois\n");
-                }
-                
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-
-        }
-    }
-
-
-
-    /**
-     * Afficher les lignes de la table s√©lectionn√©e
-     */
-    public void salaire_entreprise(String nomTable) throws SQLException, ClassNotFoundException {
-        con = new Connexion("db_tdd","root","");
-        
-        try {
-            ArrayList<String> heure;
-            ArrayList<String> statut;
-            ArrayList<String> liste;
-            ArrayList<String> ind;
-            ArrayList<String> affiche;
-            
-            int comp1,comp2 = 0;
-            double sal = 0;
-            double n = 0;
-            
-            String reque = "select * from industrie;";
-            affiche = con.remplirChampsRequete(reque);
-            
-            for(int i = 0; i < affiche.size(); i++)
-            {
-                System.out.print(affiche.get(i)); 
-            }
-            System.out.println();
-            
-            System.out.print("Saisissez l'Id de l'entreprise: ");
-            Scanner scan = new Scanner(System.in);
-            int id = scan.nextInt();
-            
-            // recuperer la liste de la table s√©lectionn√©e
-            String requeteSelectionnee = "select nb_heure from " + nomTable + ";";
-            heure = con.remplirChampsRequete(requeteSelectionnee);
-            
-            String reqSelectionnee = "select statut from " + nomTable + ";";
-            statut = con.remplirChampsRequete(reqSelectionnee);
-            
-            String req = "select nom, prenom, statut from " + nomTable + ";";
-            liste = con.remplirChampsRequete(req);
-            
-            String requ = "select FK_id_ind from " + nomTable + ";";
-            ind = con.remplirChampsRequete(requ);
-
-            // afficher les lignes de la requete selectionnee a partir de la liste
-            String[] array = new String[heure.size()]; // Liste
-            double[] tab = new double[heure.size()]; //Nombre d'heures
-            String[] tab2 = new String[heure.size()]; // Statut
-            int[] tab3 = new int[heure.size()]; // Id
-            
-            for(int i = 0; i < heure.size(); i++)
-            {
-                array[i] = liste.get(i);
-                
-                Scanner st = new Scanner(heure.get(i));
-                while (!st.hasNextDouble())
-                {
-                    st.next();
-                }
-                tab[i] = st.nextDouble();
-                
-                Scanner str = new Scanner(ind.get(i));
-                while (!str.hasNextInt())
-                {
-                    str.next();
-                }
-                tab3[i] = str.nextInt();
-                
-                
-                tab2[i] = statut.get(i);
-                comp1 = tab2[i].compareTo("Stagiaire");
-                if(((comp1 == 1) || (comp1 == 0)) && (tab3[i] == id)){
-                    sal += tab[i]*20;
-                    n += 1;
-                }
-                comp2 = tab2[i].compareTo("Cadre");
-                if(((comp2 == 1) || (comp2 == 0)) && (tab3[i] == id)){
-                    sal += tab[i]*80;
-                    n += 1;
-                }
-                comp1 = tab2[i].compareTo("Employe");
-                if(((comp1 == 1) || (comp1 == 0)) && (tab3[i] == id)){
-                    sal += tab[i]*(62.5);
-                    n += 1;
-                }
-                
-            }
-            System.out.println("Le salaire mensuel moyen de l'entreprise est de: " + (sal/n) + "‚Ç¨\n");
-            
-        } catch (SQLException e) {
-            e.printStackTrace();
-
-        }
-    }
-    
-    
-    
-    /**
-     * Afficher les lignes de la table s√©lectionn√©e
-     */
-    public void salaire_sexe() throws SQLException, ClassNotFoundException {
-        con = new Connexion("db_tdd","root","");
-        int choix = 0;
-        
-        System.out.println("1. Masculin");
-        System.out.println("2. F√©minin\n");
-        System.out.print("Votre choix: ");
-        Scanner scan = new Scanner(System.in);
-        choix = scan.nextInt();
-        
-        switch(choix){
-            case 1:
-                salaire_masculin("employe");
-                break;
-            case 2:
-                salaire_feminin("employe");
-                break;
-        }
-        
-    }
-    
-    
-    
-    
-    
-    /**
-     * Afficher les lignes de la table s√©lectionn√©e
-     */
-    public void salaire_masculin(String nomTable) throws SQLException, ClassNotFoundException {
-        con = new Connexion("db_tdd","root","");
-        
-        try {
-            ArrayList<String> heure;
-            ArrayList<String> statut;
-            ArrayList<String> liste;
-            ArrayList<String> ind;
-            ArrayList<String> affiche;
-            ArrayList<String> sex;
-            
-            int comp1,comp2,comp3 = 0;
-            double sal = 0;
-            double n = 0;
-            
-            String reque = "select * from industrie;";
-            affiche = con.remplirChampsRequete(reque);
-            
-            for(int i = 0; i < affiche.size(); i++)
-            {
-                System.out.print(affiche.get(i)); 
-            }
-            System.out.println();
-            
-            System.out.print("Saisissez l'Id de l'entreprise: ");
-            Scanner scan = new Scanner(System.in);
-            int id = scan.nextInt();
-            
-            // recuperer la liste de la table s√©lectionn√©e
-            String requeteSelectionnee = "select nb_heure from " + nomTable + ";";
-            heure = con.remplirChampsRequete(requeteSelectionnee);
-            
-            String reqSelectionnee = "select statut from " + nomTable + ";";
-            statut = con.remplirChampsRequete(reqSelectionnee);
-            
-            String req = "select nom, prenom, statut from " + nomTable + ";";
-            liste = con.remplirChampsRequete(req);
-            
-            String requ = "select FK_id_ind from " + nomTable + ";";
-            ind = con.remplirChampsRequete(requ);
-            
-            String reqSex = "select sexe from " + nomTable + ";";
-            sex = con.remplirChampsRequete(reqSex);
-
-            // afficher les lignes de la requete selectionnee a partir de la liste
-            String[] array = new String[heure.size()]; // Liste
-            double[] tab = new double[heure.size()]; //Nombre d'heures
-            String[] tab2 = new String[heure.size()]; // Statut
-            int[] tab3 = new int[heure.size()]; // Id
-            String[] tab4 = new String[heure.size()]; // Sexe
-            
-            for(int i = 0; i < heure.size(); i++)
-            {
-                array[i] = liste.get(i);
-                
-                Scanner st = new Scanner(heure.get(i));
-                while (!st.hasNextDouble())
-                {
-                    st.next();
-                }
-                tab[i] = st.nextDouble();
-                
-                Scanner str = new Scanner(ind.get(i));
-                while (!str.hasNextInt())
-                {
-                    str.next();
-                }
-                tab3[i] = str.nextInt();
-                
-                
-                //System.out.println(tab[i]);
-                
-                //tab[i] = Array.getDouble(heure, i);
-                tab2[i] = statut.get(i);
-                tab4[i] = sex.get(i);
-                comp1 = tab2[i].compareTo("Stagiaire");
-                comp3 = tab4[i].compareTo("M");
-                System.out.println(comp3);
-                if(((comp1 == 1) || (comp1 == 0)) && (tab3[i] == id) && ((comp3 == 0) || (comp3 == 1))){
-                    sal += tab[i]*20;
-                    n += 1;
-                    //System.out.println(comp1);
-                }
-                comp2 = tab2[i].compareTo("Cadre");
-                if(((comp2 == 1) || (comp2 == 0)) && (tab3[i] == id) && ((comp3 == 0) || (comp3 == 1))){
-                    sal += tab[i]*80;
-                    n += 1;
-                }
-                comp1 = tab2[i].compareTo("Employe");
-                if(((comp1 == 1) || (comp1 == 0)) && (tab3[i] == id) && ((comp3 == 0) || (comp3 == 1))){
-                    sal += tab[i]*(62.5);
-                    n += 1;
-                }
-                
-            }
-            System.out.println("Le salaire mensuel moyen de l'entreprise chez les hommes est de: " + (sal/n) + "‚Ç¨\n");
-            
-        } catch (SQLException e) {
-            e.printStackTrace();
-
-        }
-    }
-    
-    
-    /**
-     * Afficher les lignes de la table s√©lectionn√©e
-     */
-    public void salaire_feminin(String nomTable) throws SQLException, ClassNotFoundException {
-        con = new Connexion("db_tdd","root","");
-        
-        try {
-            ArrayList<String> heure;
-            ArrayList<String> statut;
-            ArrayList<String> liste;
-            ArrayList<String> ind;
-            ArrayList<String> affiche;
-            ArrayList<String> sex;
-            
-            int comp1,comp2,comp3 = 0;
-            double sal = 0;
-            double n = 0;
-            
-            String reque = "select * from industrie;";
-            affiche = con.remplirChampsRequete(reque);
-            
-            for(int i = 0; i < affiche.size(); i++)
-            {
-                System.out.print(affiche.get(i)); 
-            }
-            System.out.println();
-            
-            System.out.print("Saisissez l'Id de l'entreprise: ");
-            Scanner scan = new Scanner(System.in);
-            int id = scan.nextInt();
-            
-            // recuperer la liste de la table s√©lectionn√©e
-            String requeteSelectionnee = "select nb_heure from " + nomTable + ";";
-            heure = con.remplirChampsRequete(requeteSelectionnee);
-            
-            String reqSelectionnee = "select statut from " + nomTable + ";";
-            statut = con.remplirChampsRequete(reqSelectionnee);
-            
-            String req = "select nom, prenom, statut from " + nomTable + ";";
-            liste = con.remplirChampsRequete(req);
-            
-            String requ = "select FK_id_ind from " + nomTable + ";";
-            ind = con.remplirChampsRequete(requ);
-            
-            String reqSex = "select sexe from " + nomTable + ";";
-            sex = con.remplirChampsRequete(reqSex);
-
-            // afficher les lignes de la requete selectionnee a partir de la liste
-            String[] array = new String[heure.size()]; // Liste
-            double[] tab = new double[heure.size()]; //Nombre d'heures
-            String[] tab2 = new String[heure.size()]; // Statut
-            int[] tab3 = new int[heure.size()]; // Id
-            String[] tab4 = new String[heure.size()]; // Sexe
-            
-            for(int i = 0; i < heure.size(); i++)
-            {
-                array[i] = liste.get(i);
-                
-                Scanner st = new Scanner(heure.get(i));
-                while (!st.hasNextDouble())
-                {
-                    st.next();
-                }
-                tab[i] = st.nextDouble();
-                
-                Scanner str = new Scanner(ind.get(i));
-                while (!str.hasNextInt())
-                {
-                    str.next();
-                }
-                tab3[i] = str.nextInt();
-                
-               
-                tab2[i] = statut.get(i);
-                tab4[i] = sex.get(i);
-                comp1 = tab2[i].compareTo("Stagiaire");
-                comp3 = tab4[i].compareTo("F");
-                System.out.println(comp3);
-                if(((comp1 == 1) || (comp1 == 0)) && (tab3[i] == id) && ((comp3 == 0) || (comp3 == 1))){
-                    sal += tab[i]*20;
-                    n += 1;
-                }
-                comp2 = tab2[i].compareTo("Cadre");
-                if(((comp2 == 1) || (comp2 == 0)) && (tab3[i] == id) && ((comp3 == 0) || (comp3 == 1))){
-                    sal += tab[i]*80;
-                    n += 1;
-                }
-                comp1 = tab2[i].compareTo("Employe");
-                if(((comp1 == 1) || (comp1 == 0)) && (tab3[i] == id) && ((comp3 == 0) || (comp3 == 1))){
-                    sal += tab[i]*(62.5);
-                    n += 1;
-                }
-                
-                
-            }
-            System.out.println("Le salaire mensuel moyen de l'entreprise chez les femmes est de: " + (sal/n) + "‚Ç¨\n");
-            
-        } catch (SQLException e) {
-            e.printStackTrace();
-
-        }
-    }
-    
-    
-    
-    /**
-     * Afficher les lignes de la table s√©lectionn√©e
+    /**@author Vick
+     * 
+     * Menu permettant de choisir le salaire en fonction du statut
      */
     public void salaire_statut() throws SQLException, ClassNotFoundException {
         con = new Connexion("db_tdd","root","");
@@ -684,13 +128,13 @@ public class Salaire {
         
         switch(choix){
             case 1:
-                salaire_stat("employe", "Cadre");
+                salaire_cond("employe","statut", "Cadre");
                 break;
             case 2:
-                salaire_stat("employe", "Employe");
+                salaire_cond("employe","statut", "Employe");
                 break;
             case 3:
-                salaire_stat("employe", "Stagiaire");
+                salaire_cond("employe","statut", "Stagiaire");
                 break;
         }
         
@@ -698,21 +142,263 @@ public class Salaire {
     
     
     /**
-     * Afficher les lignes de la table s√©lectionn√©e
+     * Permet de calculer les primes en fonction du nombre d'heures travaillÈes et du statut
+     * @author Vick
+     * Ecriture de la fonction
+     * 
+     * @author Loic
+     * Modification
      */
-    public void salaire_stat(String nomTable, String statuts) throws SQLException, ClassNotFoundException {
+    public void calcul_prime(String nomTable) throws SQLException, ClassNotFoundException {
         con = new Connexion("db_tdd","root","");
         
         try {
             ArrayList<String> heure;
             ArrayList<String> statut;
             ArrayList<String> liste;
-            ArrayList<String> ind;
-            ArrayList<String> affiche;
+            double prime = 0;
             
-            int comp1,comp2 = 0;
-            double sal_stagiaire = 0, sal_emp = 0, sal_cadre = 0;
-            double ns = 0, ne = 0, nc = 0;
+            
+            // recuperer la liste de la table sÈlectionnÈe
+            String requeteSelectionnee = "select nb_heure from " + nomTable + ";";
+            heure = con.remplirChampsRequete(requeteSelectionnee);
+            
+            String reqSelectionnee = "select statut from " + nomTable + ";";
+            statut = con.remplirChampsRequete(reqSelectionnee);
+            
+            String req = "select nom, prenom, statut from " + nomTable + ";";
+            liste = con.remplirChampsRequete(req);
+
+            // afficher les lignes de la requete selectionnee a partir de la liste
+        
+            for(int i = 0; i < heure.size(); i++)
+            {
+            	double surplusHoraire=0;
+                
+                Scanner st = new Scanner(heure.get(i));
+                while (!st.hasNextDouble())
+                {
+                    st.next();
+                }
+
+                switch (statut.get(i)) {
+                case "Stagiaire\n" :
+                	surplusHoraire = Double.parseDouble(heure.get(i)) - 35;
+                    if(surplusHoraire<=0){ prime = 0;}
+                    else{
+                       prime = surplusHoraire*20;}
+                    break;
+                    
+                case "Employe\n" :
+                	 surplusHoraire = Double.parseDouble(heure.get(i)) - 40;
+                     if(surplusHoraire<=0){ prime = 0;}
+                     else{
+                         prime = surplusHoraire*(62.5);
+                     }
+                     break;
+                     
+                case "Cadre\n" :
+                	surplusHoraire = Double.parseDouble(heure.get(i)) - 45;
+                    if(surplusHoraire<=0){ prime = 0;}
+                    else{
+                        prime = surplusHoraire*80;
+                    }
+                    break;
+                
+                default : 
+                	System.out.println("Erreur");
+                	break;
+            }
+                System.out.println(liste.get(i) + "Prime: " + prime + "Ä/mois\n");
+                
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+    }
+    
+    
+    
+    
+    /**
+     * Permet d'afficher les employÈs prÈsents dans la BDD
+     * 
+     * @author Vick
+     * Ecriture de la fonction
+     * 
+     * @author Loic
+     * Modifications
+     */
+    public static void sal_employes(String nomTable) {
+
+        try {
+            ArrayList<String> heure;
+            ArrayList<String> statut;
+            ArrayList<String> liste;
+            double sal = 0;
+            
+            // recuperer la liste de la table sÈlectionnÈe
+            String requeteSelectionnee = "select nb_heure from " + nomTable + ";";
+            heure = con.remplirChampsRequete(requeteSelectionnee);
+            
+            String reqSelectionnee = "select statut from " + nomTable + ";";
+            statut = con.remplirChampsRequete(reqSelectionnee);
+            
+            String req = "select nom, prenom, statut from " + nomTable + ";";
+            liste = con.remplirChampsRequete(req);
+
+            // afficher les lignes de la requete selectionnee a partir de la liste
+
+            
+            for(int i = 0; i < heure.size(); i++)
+            {
+                Scanner st = new Scanner(heure.get(i));
+                while (!st.hasNextDouble())
+                {
+                    st.next();
+                }
+            
+      
+                switch (statut.get(i)) {
+                case "Stagiaire\n" :
+                	sal = Double.parseDouble(heure.get(i))*3.75;
+                    break;
+                    
+                case "Employe\n" :
+                	 sal = Double.parseDouble(heure.get(i))*7.93;
+                     break;
+                     
+                case "Cadre\n" :
+                	sal = Double.parseDouble(heure.get(i))*9.13;
+                    break;
+                
+                default : 
+                	System.out.println("Erreur");
+                	break;
+            } 
+                System.out.println(liste.get(i) + sal + "Ä/mois\n");
+                
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+    }
+    
+    
+    /**
+     * Permet d'afficher le salaire d'un employÈ dans la BDD
+     * 
+     * @author Vick
+     * Ecriture de la fonction
+     * 
+     * @author Loic
+     * Modification
+     */
+    public static void sal_employe(String nomTable) {
+
+        try {
+            ArrayList<String> heure;
+            ArrayList<String> statut;
+            ArrayList<String> liste;
+            ArrayList<String> affiche;
+            double sal = 0;
+            int id;
+            
+            String reqListe = "select id_emp, nom, prenom from " + nomTable + ";";
+            affiche = con.remplirChampsRequete(reqListe);
+
+            //Afficher les lignes de la requÍte sÈlectionnÈe
+            String[] aff = new String[affiche.size()]; // Affichage liste
+
+            for(int i = 0; i < affiche.size(); i++)
+            {
+                System.out.print(affiche.get(i)); 
+            }
+            System.out.println();
+            
+            System.out.print("Saisissez l'id de l'employÈ: ");
+            Scanner scan = new Scanner(System.in);
+            id = scan.nextInt();
+            // recuperer la liste de la table sÈlectionnÈe
+            String requeteSelectionnee = "select nb_heure from " + nomTable + " where id_emp="+id+";";
+            heure = con.remplirChampsRequete(requeteSelectionnee);
+            
+            String reqSelectionnee = "select statut from " + nomTable + " where id_emp="+id+";";
+            statut = con.remplirChampsRequete(reqSelectionnee);
+            
+            String req = "select nom, prenom, statut from " + nomTable + " where id_emp="+id+";";
+            liste = con.remplirChampsRequete(req);
+
+            
+            for(int i = 0; i < heure.size(); i++)
+            {
+                
+                Scanner st = new Scanner(heure.get(i));
+                while (!st.hasNextDouble())
+                {
+                    st.next();
+                }
+     
+                //System.out.println(tab[i]);
+                
+                Scanner str = new Scanner(liste.get(i));
+                while (!str.hasNextInt())
+                {
+                    str.next();
+                }
+                switch (statut.get(i)) {
+                case "Stagiaire\n" :
+                	sal = Double.parseDouble(heure.get(i))*3.75;
+                    break;
+                    
+                case "Employe\n" :
+                	 sal = Double.parseDouble(heure.get(i))*7.93;
+                     break;
+                     
+                case "Cadre\n" :
+                	sal = Double.parseDouble(heure.get(i))*9.13;
+                    break;
+                
+                default : 
+                	System.out.println("Erreur");
+                	break;
+            }
+                    System.out.println(liste.get(i) + sal + "Ä/mois\n");
+                
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+    }
+
+
+
+    /**
+     * Permet d'afficher le salaire moyen dans une entreprise
+     * 
+     * @author Vick
+     * Ecriture de la fonction
+     * 
+     * @author Loic
+     * Modification
+     */
+    public void salaire_entreprise(String nomTable) throws SQLException, ClassNotFoundException {
+        con = new Connexion("db_tdd","root","");
+        
+        try {
+            ArrayList<String> heure;
+            ArrayList<String> statut;
+
+            ArrayList<String> affiche;
+           
+            double sal = 0;
+            double n = 0;
             
             String reque = "select * from industrie;";
             affiche = con.remplirChampsRequete(reque);
@@ -727,76 +413,135 @@ public class Salaire {
             Scanner scan = new Scanner(System.in);
             int id = scan.nextInt();
             
-            // recuperer la liste de la table s√©lectionn√©e
-            String requeteSelectionnee = "select nb_heure from " + nomTable + ";";
+            // recuperer la liste de la table sÈlectionnÈe
+            String requeteSelectionnee = "select nb_heure from " + nomTable + " where fk_id_ind="+id+";";
             heure = con.remplirChampsRequete(requeteSelectionnee);
             
-            String reqSelectionnee = "select statut from " + nomTable + ";";
+            String reqSelectionnee = "select statut from " + nomTable  + " where fk_id_ind="+id+";";
             statut = con.remplirChampsRequete(reqSelectionnee);
             
-            String req = "select nom, prenom, statut from " + nomTable + ";";
-            liste = con.remplirChampsRequete(req);
-            
-            String requ = "select FK_id_ind from " + nomTable + ";";
-            ind = con.remplirChampsRequete(requ);
 
             // afficher les lignes de la requete selectionnee a partir de la liste
-            String[] array = new String[heure.size()]; // Liste
-            double[] tab = new double[heure.size()]; //Nombre d'heures
-            String[] tab2 = new String[heure.size()]; // Statut
-            int[] tab3 = new int[heure.size()]; // Id
+           
             
             for(int i = 0; i < heure.size(); i++)
             {
-                array[i] = liste.get(i);
                 
                 Scanner st = new Scanner(heure.get(i));
                 while (!st.hasNextDouble())
                 {
                     st.next();
                 }
-                tab[i] = st.nextDouble();
+
+           
+         
+               switch (statut.get(i)) {
+                case "Stagiaire\n" :
+                	sal += Double.parseDouble(heure.get(i))*3.75;
+                	n+=1;
+                    break;
+                    
+                case "Employe\n" :
+                	 sal += Double.parseDouble(heure.get(i))*7.93;
+                	 n+=1;
+                     break;
+                     
+                case "Cadre\n" :
+                	sal += Double.parseDouble(heure.get(i))*9.13;
+                	n+=1;
+                    break;
                 
-                Scanner str = new Scanner(ind.get(i));
-                while (!str.hasNextInt())
+                default : 
+                	System.out.println("Erreur");
+                	break;
+                
+            }
+            }
+            System.out.println("Le salaire mensuel moyen de l'entreprise est de: " + (sal/n) + "Ä\n");
+
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+    }
+    
+    /**
+     * Permet d'afficher le salaire moyen selon le genre ou le statut dans une entreprise
+     * 
+     *@author Vick
+     *Ecriture de la fonction
+     *@author Loic
+     *RÈ-ecriture
+     */
+    public void salaire_cond(String nomTable, String condColumnName, String condColumnInput) throws SQLException, ClassNotFoundException {
+        con = new Connexion("db_tdd","root","");
+        
+        try {
+            ArrayList<String> heure;
+            ArrayList<String> statut;
+            ArrayList<String> liste;
+            ArrayList<String> ind;
+            ArrayList<String> affiche;
+            
+            int n=0;
+            double sal=0;
+            
+            String reque = "select * from industrie;";
+            affiche = con.remplirChampsRequete(reque);
+            
+            for(int i = 0; i < affiche.size(); i++)
+            {
+                System.out.print(affiche.get(i)); 
+            }
+            System.out.println();
+            
+            System.out.print("Saisissez l'Id de l'entreprise: ");
+            Scanner scan = new Scanner(System.in);
+            int id = scan.nextInt();
+            
+            String choice="WHERE "+condColumnName+"='"+condColumnInput+"' AND fk_id_ind ="+id;
+            
+            String requeteSelectionnee = "select nb_heure from " + nomTable + " "+choice+";";
+            heure = con.remplirChampsRequete(requeteSelectionnee);
+            
+            String reqSelectionnee = "select statut from " + nomTable+ " "+choice+";";
+            statut = con.remplirChampsRequete(reqSelectionnee);
+
+            
+            for(int i = 0; i < heure.size(); i++)
+            {
+
+                Scanner st = new Scanner(heure.get(i));
+                while (!st.hasNextDouble())
                 {
-                    str.next();
+                    st.next();
                 }
-                tab3[i] = str.nextInt();
+                switch (statut.get(i)) {
+                case "Stagiaire\n" :
+                	sal += Double.parseDouble(heure.get(i))*3.75;
+                	n+=1;
+                    break;
+                    
+                case "Employe\n" :
+                	 sal += Double.parseDouble(heure.get(i))*7.93;
+                	 n+=1;
+                     break;
+                     
+                case "Cadre\n" :
+                	sal += Double.parseDouble(heure.get(i))*9.13;
+                	n+=1;
+                    break;
                 
-                
-                //System.out.println(tab[i]);
-                
-                //tab[i] = Array.getDouble(heure, i);
-                tab2[i] = statut.get(i);
-                comp1 = tab2[i].compareTo("Stagiaire");
-                if(((comp1 == 1) || (comp1 == 0)) && (tab3[i] == id)){
-                    sal_stagiaire += tab[i]*20;
-                    ns += 1;
-                    //System.out.println(comp1);
-                }
-                comp2 = tab2[i].compareTo("Cadre");
-                if(((comp2 == 1) || (comp2 == 0)) && (tab3[i] == id)){
-                    sal_cadre += tab[i]*80;
-                    nc += 1;
-                }
-                comp1 = tab2[i].compareTo("Employe");
-                if(((comp1 == 1) || (comp1 == 0)) && (tab3[i] == id)){
-                    sal_emp += tab[i]*(62.5);
-                    ne += 1;
-                }
-                
+                default : 
+                	System.out.println("Erreur");
+                	break;
                 
             }
-            if((statuts.compareTo("Stagiaire") == 0) || (statuts.compareTo("Stagiaire") == 1)){
-                System.out.println("Le salaire mensuel moyen d'un " + statuts + "dans l'entreprise  est de: " + (sal_stagiaire/ns) + "‚Ç¨\n");
+            System.out.println("Le salaire mensuel moyen de l'entreprise pour la condition sÈlectionnÈ est de: " + (sal/n) + "Ä\n");
+                
             }
-            else if((statuts.compareTo("Employe") == 0) || (statuts.compareTo("Employe") == 1)){
-                System.out.println("Le salaire mensuel moyen d'un " + statuts + "dans l'entreprise  est de: " + (sal_emp/ne) + "‚Ç¨\n");
-            }
-            else if((statuts.compareTo("Cadre") == 0) || (statuts.compareTo("Cadre") == 1)){
-                System.out.println("Le salaire mensuel moyen d'un " + statuts + "dans l'entreprise  est de: " + (sal_cadre/nc) + "‚Ç¨\n");
-            }
+         
             
         } catch (SQLException e) {
             e.printStackTrace();
