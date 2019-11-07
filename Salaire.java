@@ -296,14 +296,14 @@ public class Salaire {
                 	surplusHoraire = Double.parseDouble(heure.get(i)) - 175;
                     if(surplusHoraire<=0){ prime = 0;}
                     else{
-                       prime = surplusHoraire*(3.75);}
+                       prime = surplusHoraire*(3.75*1.25);}
                     break;
                     
                 case "Employe\n" :
                 	 surplusHoraire = Double.parseDouble(heure.get(i)) - 200;
                      if(surplusHoraire<=0){ prime = 0;}
                      else{
-                         prime = surplusHoraire*(7.93);
+                         prime = surplusHoraire*(7.93*1.25);
                      }
                      break;
                      
@@ -311,7 +311,7 @@ public class Salaire {
                 	surplusHoraire = Double.parseDouble(heure.get(i)) - 225;
                     if(surplusHoraire<=0){ prime = 0;}
                     else{
-                        prime = surplusHoraire*(9.13);
+                        prime = surplusHoraire*(9.13*1.25);
                     }
                     break;
                 
