@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package fonction;
+package tddVickou;
 
-import static fonction.Fonction.getMoyenneHeureEmployeProjet;
+import static tddVickou.Fonction.getMoyenneHeureEmployeProjet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -19,7 +19,7 @@ import java.lang.reflect.Array;
  */
 public class Salaire {
     
-    //ParamÃ¨tres
+    //Paramètres
     private static Fonction func = new Fonction();
     private static Connexion con = null;
     
@@ -28,11 +28,11 @@ public class Salaire {
     //Fonctions
     public void menuSalaire() throws SQLException, ClassNotFoundException{
         System.out.println("1. Retour au menu principal");
-        System.out.println("2. Calcul des primes par employÃ©");
+        System.out.println("2. Calcul des primes par employé");
         System.out.println("3. Salaire mensuel moyen par entreprise");
         System.out.println("4. Salaire mensuel moyen par sexe");
         System.out.println("5. Salaire mensuel moyen par statut");
-        System.out.println("6. Salaire par employÃ©\n");
+        System.out.println("6. Salaire par employé\n");
         System.out.print("Votre choix: ");
   
         Scanner scan = new Scanner(System.in);
@@ -54,15 +54,16 @@ public class Salaire {
                 for(int i = 0; i < affiche.size(); i++)
                 {
                     System.out.print(affiche.get(i)); 
-                  
                 }
                 System.out.println();
 
                 System.out.print("Saisissez l'Id de l'entreprise: ");
                 Scanner sc = new Scanner(System.in);
                 int id = sc.nextInt();
+                if(con.verifValiditeID(id, "industrie")&&con.verifDataInDB(id, "industrie")) {
                 double result_moy = salaire_entreprise("employe", id);
-                System.out.println("Le salaire mensuel moyen de l'entreprise est de: " + result_moy + "â‚¬\n");
+                System.out.println("Le salaire mensuel moyen de l'entreprise est de: " + result_moy + "€\n");
+                }
                 break;
             case 4:
                 salaire_sexe();
@@ -73,6 +74,9 @@ public class Salaire {
             case 6:
                 salaire_employe();
                 break;
+                
+            default :
+            	break;
         }
     }
     
@@ -83,7 +87,7 @@ public class Salaire {
         String reque = "select * from industrie;";
         
         System.out.println("1. Masculin");
-        System.out.println("2. FÃ©minin\n");
+        System.out.println("2. Féminin\n");
         System.out.print("Votre choix: ");
         Scanner scan = new Scanner(System.in);
         choix = scan.nextInt();
@@ -101,8 +105,9 @@ public class Salaire {
                 System.out.print("Saisissez l'Id de l'entreprise: ");
                 Scanner sc = new Scanner(System.in);
                 id = sc.nextInt();
+                if(con.verifValiditeID(id, "industrie")&&con.verifDataInDB(id, "industrie")) {
                 double result_masculin = salaire_cond("employe","sexe", "M", id);
-                System.out.println("Le salaire mensuel moyen de l'entreprise pour un homme est de: " + result_masculin + "â‚¬\n");
+                System.out.println("Le salaire mensuel moyen de l'entreprise pour un homme est de: " + result_masculin + "€\n");}
                 break;
             case 2:
                 affiche = con.remplirChampsRequete(reque);
@@ -116,10 +121,15 @@ public class Salaire {
                 System.out.print("Saisissez l'Id de l'entreprise: ");
                 sc = new Scanner(System.in);
                 id = sc.nextInt();
+                if(con.verifValiditeID(id, "industrie")&&con.verifDataInDB(id, "industrie")) {
                 double result_feminin = salaire_cond("employe","sexe","F", id);
-                System.out.println("Le salaire mensuel moyen de l'entreprise pour une femme est de: " + result_feminin + "â‚¬\n");
+                System.out.println("Le salaire mensuel moyen de l'entreprise pour une femme est de: " + result_feminin + "€\n");}
                 
                 break;
+                
+            default :
+            	System.out.println("Erreur, retour au menu précèdent.");
+            	break;
         }
         
     }
@@ -128,14 +138,14 @@ public class Salaire {
     
     
     /**
-     *Menu permettant de choisir le salaire pour un employe ou tous les employÃ©s
+     *Menu permettant de choisir le salaire pour un employe ou tous les employés
      */
     public void salaire_employe() throws SQLException, ClassNotFoundException {
         con = new Connexion("db_tdd","root","");
         
         System.out.println("1. Retour au menu Salaire");
-        System.out.println("2. Salaire de tous les employÃ©s");
-        System.out.println("3. Salaire d'un seul employÃ©\n");
+        System.out.println("2. Salaire de tous les employés");
+        System.out.println("3. Salaire d'un seul employé\n");
         System.out.print("Votre choix: ");
         
         Scanner scan = new Scanner(System.in);
@@ -153,18 +163,19 @@ public class Salaire {
                 String reqListe = "select id_emp, nom, prenom from employe;";
                 affiche = con.remplirChampsRequete(reqListe);
 
-                //Afficher les lignes de la requÃªte sÃ©lectionnÃ©e
+                //Afficher les lignes de la requête sélectionnée
                 for(int i = 0; i < affiche.size(); i++)
                 {
                     System.out.print(affiche.get(i)); 
                 }
                 System.out.println();
 
-                System.out.print("Saisissez l'id de l'employÃ©: ");
+                System.out.print("Saisissez l'id de l'employé: ");
                 Scanner sc = new Scanner(System.in);
                 int id = sc.nextInt();
+                if(con.verifValiditeID(id, "employe")&&con.verifDataInDB(id, "employe")) {
                 double result = sal_employe("employe", id);
-                System.out.println("Salaire: " + result + " â‚¬/mois");
+                System.out.println("Salaire: " + result + " €/mois");}
                 break;
         }
     }
@@ -199,8 +210,9 @@ public class Salaire {
                 System.out.print("Saisissez l'Id de l'entreprise: ");
                 Scanner sc = new Scanner(System.in);
                 id = sc.nextInt();
+                if(con.verifValiditeID(id, "industrie")&&con.verifDataInDB(id, "industrie")) {
                 double result_cadre = salaire_cond("employe","statut", "Cadre", id);
-                System.out.println("Le salaire mensuel moyen de l'entreprise pour un cadre est de: " + result_cadre + "â‚¬\n");
+                System.out.println("Le salaire mensuel moyen de l'entreprise pour un cadre est de: " + result_cadre + "€\n");}
                 break;
             case 2:
                 affiche = con.remplirChampsRequete(reque);
@@ -214,8 +226,9 @@ public class Salaire {
                 System.out.print("Saisissez l'Id de l'entreprise: ");
                 sc = new Scanner(System.in);
                 id = sc.nextInt();
+                if(con.verifValiditeID(id, "industrie")&&con.verifDataInDB(id, "industrie")) {
                 double result_emp = salaire_cond("employe","statut", "Employe", id);
-                System.out.println("Le salaire mensuel moyen de l'entreprise pour un employÃ© est de: " + result_emp + "â‚¬\n");
+                System.out.println("Le salaire mensuel moyen de l'entreprise pour un employé est de: " + result_emp + "€\n");}
                 break;
             case 3:
                 affiche = con.remplirChampsRequete(reque);
@@ -229,8 +242,9 @@ public class Salaire {
                 System.out.print("Saisissez l'Id de l'entreprise: ");
                 sc = new Scanner(System.in);
                 id = sc.nextInt();
+                if(con.verifValiditeID(id, "industrie")&&con.verifDataInDB(id, "industrie")) {
                 double result_stagiaire = salaire_cond("employe","statut", "Stagiaire", id);
-                System.out.println("Le salaire mensuel moyen de l'entreprise pour un stagiaire est de: " + result_stagiaire + "â‚¬\n");
+                System.out.println("Le salaire mensuel moyen de l'entreprise pour un stagiaire est de: " + result_stagiaire + "€\n");}
                 break;
         }
         
@@ -238,7 +252,7 @@ public class Salaire {
     
     
     /**
-     * Permet de calculer les primes en fonction du nombre d'heures travaillÃ©es et du statut
+     * Permet de calculer les primes en fonction du nombre d'heures travaillées et du statut
      * @author Vick
      * Ecriture de la fonction
      * 
@@ -255,7 +269,7 @@ public class Salaire {
             double prime = 0;
             
             
-            // recuperer la liste de la table sÃ©lectionnÃ©e
+            // recuperer la liste de la table sélectionnée
             String requeteSelectionnee = "select nb_heure from " + nomTable + ";";
             heure = con.remplirChampsRequete(requeteSelectionnee);
             
@@ -282,14 +296,14 @@ public class Salaire {
                 	surplusHoraire = Double.parseDouble(heure.get(i)) - 175;
                     if(surplusHoraire<=0){ prime = 0;}
                     else{
-                       prime = surplusHoraire*(3.75*1.25);}
+                       prime = surplusHoraire*(3.75);}
                     break;
                     
                 case "Employe\n" :
                 	 surplusHoraire = Double.parseDouble(heure.get(i)) - 200;
                      if(surplusHoraire<=0){ prime = 0;}
                      else{
-                         prime = surplusHoraire*(7.93*1.25);
+                         prime = surplusHoraire*(7.93);
                      }
                      break;
                      
@@ -297,7 +311,7 @@ public class Salaire {
                 	surplusHoraire = Double.parseDouble(heure.get(i)) - 225;
                     if(surplusHoraire<=0){ prime = 0;}
                     else{
-                        prime = surplusHoraire*(9.13*1.25);
+                        prime = surplusHoraire*(9.13);
                     }
                     break;
                 
@@ -305,7 +319,7 @@ public class Salaire {
                 	System.out.println("Erreur");
                 	break;
             }
-                System.out.println(liste.get(i) + "Prime: " + prime + "â‚¬/mois\n");
+                System.out.println(liste.get(i) + "Prime: " + prime + "€/mois\n");
                 
             }
 
@@ -319,7 +333,7 @@ public class Salaire {
     
     
     /**
-     * Permet d'afficher les employÃ©s prÃ©sents dans la BDD
+     * Permet d'afficher les employés présents dans la BDD
      * 
      * @author Vick
      * Ecriture de la fonction
@@ -337,7 +351,7 @@ public class Salaire {
             double sal = 0;
             
             
-            // recuperer la liste de la table sÃ©lectionnÃ©e
+            // recuperer la liste de la table sélectionnée
             String requeteSelectionnee = "select nb_heure from " + nomTable + ";";
             heure = con.remplirChampsRequete(requeteSelectionnee);
             
@@ -379,7 +393,7 @@ public class Salaire {
                 	System.out.println("Erreur");
                 	break;
             } 
-                System.out.println(liste.get(i) + sal + "â‚¬/mois\n");
+                System.out.println(liste.get(i) + sal + "€/mois\n");
                 
             }
 
@@ -392,7 +406,7 @@ public class Salaire {
     
     
     /**
-     * Permet d'afficher le salaire d'un employÃ© dans la BDD
+     * Permet d'afficher le salaire d'un employé dans la BDD
      * 
      * @author Vick
      * Ecriture de la fonction
@@ -409,7 +423,7 @@ public class Salaire {
             
             
             
-            // recuperer la liste de la table sÃ©lectionnÃ©e
+            // recuperer la liste de la table sélectionnée
             String requeteSelectionnee = "select nb_heure from " + nomTable + " where id_emp="+id+";";
             heure = con.remplirChampsRequete(requeteSelectionnee);
             
@@ -481,7 +495,7 @@ public class Salaire {
           
             double n = 0;            
             
-            // recuperer la liste de la table sÃ©lectionnÃ©e
+            // recuperer la liste de la table sélectionnée
             String requeteSelectionnee = "select nb_heure from " + nomTable + " where fk_id_ind="+id+";";
             heure = con.remplirChampsRequete(requeteSelectionnee);
             
@@ -535,7 +549,7 @@ public class Salaire {
      *@author Vick
      *Ecriture de la fonction
      *@author Loic
-     *RÃ©-ecriture
+     *Ré-ecriture
      */
     public double salaire_cond(String nomTable, String condColumnName, String condColumnInput, int id) throws SQLException, ClassNotFoundException {
         con = new Connexion("db_tdd","root","");
@@ -597,4 +611,6 @@ public class Salaire {
         return(sal_moyen);
     }
     
+    
+
 }

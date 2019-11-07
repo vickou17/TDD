@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package testTDD;
+package tddVickou;
 
 /*
  * 
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 /**
  * 
- * Connexion a votre BDD locale ou à distance sur le serveur de l'ECE via le tunnel SSH
+ * Connexion a votre BDD locale ou Ã  distance sur le serveur de l'ECE via le tunnel SSH
  * 
  * @author segado
  */
@@ -33,16 +33,16 @@ public class Connexion {
      */
     public ArrayList<String> tables = new ArrayList<>();
     /**
-     * ArrayList public pour les requêtes de sélection
+     * ArrayList public pour les requÃªtes de sélection
      */
     public ArrayList<String> requetes = new ArrayList<>();
     /**
-     * ArrayList public pour les requêtes de MAJ
+     * ArrayList public pour les requÃªtes de MAJ
      */
     public ArrayList<String> requetesMaj = new ArrayList<>();
 
     /**
-     * Constructeur avec 3 paramètres : nom, login et password de la BDD locale
+     * Constructeur avec 3 paramÃ¨tres : nom, login et password de la BDD locale
      *
      * @param nameDatabase
      * @param loginDatabase
@@ -57,7 +57,7 @@ public class Connexion {
         // url de connexion "jdbc:mysql://localhost:3305/usernameECE"
         String urlDatabase = "jdbc:mysql://localhost/" + nameDatabase;
 
-        //création d'une connexion JDBC à la base 
+        //création d'une connexion JDBC Ã  la base 
         conn = DriverManager.getConnection(urlDatabase, loginDatabase, passwordDatabase);
 
         // création d'un ordre SQL (statement)
@@ -120,7 +120,7 @@ public class Connexion {
             champs = champs + " " + rsetMeta.getColumnLabel(i + 1);
         }
 
-        // ajouter un "\n" à la ligne des champs
+        // ajouter un "\n" Ã  la ligne des champs
         champs = champs + "\n";
 
         // ajouter les champs de la ligne dans l'ArrayList
@@ -150,7 +150,7 @@ public class Connexion {
             champs = champs + " " + rsetMeta.getColumnLabel(i + 1);
         }
 
-        // ajouter un "\n" à la ligne des champs
+        // ajouter un "\n" Ã  la ligne des champs
         champs = champs + "\n";
 
         // ajouter les champs de la ligne dans l'ArrayList
@@ -194,7 +194,7 @@ public class Connexion {
                 champs = champs + "," + rset.getString(i + 1);
             }
 
-            // ajouter un "\n" à la ligne des champs
+            // ajouter un "\n" Ã  la ligne des champs
             champs = champs + "\n";
 
             // ajouter les champs de la ligne dans l'ArrayList
@@ -205,7 +205,7 @@ public class Connexion {
         return liste;
     }
     
-    /** Retourne le résultat de la requête unique
+    /** Retourne le résultat de la requÃªte unique
      * 
      * @author Loic
      * @param requete
@@ -260,9 +260,6 @@ public class Connexion {
         // récupération du résultat de l'ordre
         rsetMeta = rset.getMetaData();
 
-        // creation d'une ArrayList de String
-        ArrayList<String> liste;
-        liste = new ArrayList<String>();
 
         // tant qu'il reste une ligne 
         while (rset.next()) {
@@ -271,10 +268,60 @@ public class Connexion {
             	validity=true;
             }
         }
+        if(!validity) {
+        	System.out.println("Erreur, veuillez entrer un id valide.");
+        }
 
         // Retourner l'ArrayList
         return validity;
     }
+    
+    /**
+     * Methode qui verifie l'integrité de l'id en entrée pour la table donnée
+     * @return 
+     * @throws java.sql.SQLException
+     * @author Loic
+     */
+    public boolean verifDataInDB(int id, String table) throws SQLException {
+    	boolean validity=false;
+        // récupération de l'ordre de la requete
+    	switch(table) {
+    	
+    	case "industrie":
+        rset = stmt.executeQuery("SELECT id_emp FROM (employe)"
+        		+ "WHERE (FK_id_ind="+id+");");
+        break;
+        
+    	case "projet":
+        rset = stmt.executeQuery("SELECT fk_id_projet FROM intermediaire "
+        		+ "WHERE fk_id_projet="+id+";");
+        break;
+        
+    	case "employe":
+    	rset = stmt.executeQuery("SELECT id_emp FROM employe WHERE id_emp="+id+";");
+    	break;
+        
+        
+    	}
+        // récupération du résultat de l'ordre
+        rsetMeta = rset.getMetaData();
+
+
+        // tant qu'il reste une ligne 
+        if(rset.next()) {
+
+        	return true;
+        } else {
+        	System.out.println("Erreur veuillez entrer des valeurs dans la BDD.");
+        }
+
+        // Retourner l'ArrayList
+        return validity;
+    }
+    
+ 
+    
+    
 
     /**
      * Méthode qui execute une requete de MAJ en parametre
