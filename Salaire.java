@@ -54,6 +54,7 @@ public class Salaire {
                 for(int i = 0; i < affiche.size(); i++)
                 {
                     System.out.print(affiche.get(i)); 
+                    case 5: println(get.smth(i));
                 }
                 System.out.println();
 
