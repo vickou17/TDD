@@ -13,6 +13,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 /**
@@ -27,20 +28,10 @@ public class Fonction {
 
     private static Connexion con = null;
     private static Salaire sal = new Salaire();
-    
-    static double x = 0;
-
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        // TODO code application logic here
-        /*x=somme();
-        System.out.println("La somme est:" + x);
-        x=moyenne();
-        System.out.println("La moyenne est:" + x);
-        x=variance();
-        System.out.println("La variance est:" + x);*/
-    	
-
+        
+    	DecimalFormat df = new DecimalFormat("########.00");
         con = new Connexion("db_tdd","root","");
         
         Scanner scan = new Scanner(System.in);
@@ -52,7 +43,9 @@ public class Fonction {
 		System.out.println("\n \t Menu"
 				+ "\n 1. Voir les données des employés d'une entreprise."
 				+ "\n 2. Voir les données des employés pour un projet."
-                                + "\n 3. Voir les informations sur le salaire\n");
+				+ "\n 3. Voir les informations sur le salaire"
+				+ "\n 4. Comparer les entreprises selon des caractères précis."
+				+" \n 5. Obtenir des statistiques avancés sur votre entreprise ou projet\n");
                 System.out.print("Votre choix: ");
 		  i=scan.nextInt();
 		switch(i) {
@@ -91,13 +84,133 @@ public class Fonction {
 			break;
 		
 		case 3: 
-                        sal.menuSalaire();
+			sal.menuSalaire();
 			break;
 			
+		case 4 :
+			
+			
+			int userChoice2;
+			do {
+				System.out.println("\n Comparer les différences de salaire selon :"
+						+ "\n 1. Le statut dans l'entreprise."
+						+ "\n 2. Le genre des employés.");
+				userChoice2 = new Scanner(System.in).nextInt();
+				ArrayList<Integer> listOfId = con.listeIdTable("industrie");
+				Salaire sal = new Salaire();
+				switch (userChoice2){
+					
+					case 1 :
+						System.out.println("Veuillez entrer le numéro du statut dont vous souhaitez faire la comparaison :"
+								+ "\n 1. Stagiaire"
+								+ "\n 2. Employe"
+								+ "\n 3. Cadre");
+						switch(new Scanner(System.in).nextInt()) {
+						
+							case 1:
+								System.out.println("Comparaison des salaires selon le statut :");
+								
+								listOfId=con.listeIdTable("industrie");
+								for(int j=0;j<listOfId.size();j++) {
+								System.out.println("L'entreprise : "+con.nameInTable(listOfId.get(j), "industrie")
+								+" offre comme salaire moyen a ses stagiaires : "+df.format(sal.salaire_cond("employe", "statut", "stagiaire",listOfId.get(j)))+" euros");
+								}
+								break;
+								
+							case 2:
+								System.out.println("Comparaison des salaires selon le statut :");
+								listOfId=con.listeIdTable("industrie");
+								for(int j=0;j<listOfId.size();j++) {
+								System.out.println("L'entreprise : "+con.nameInTable(listOfId.get(j), "industrie")
+								+" offre comme salaire moyen a ses employes : "+df.format(sal.salaire_cond("employe", "statut", "employe",listOfId.get(j)))+" euros");
+								}
+								break;
+								
+							case 3: 
+								System.out.println("Comparaison des salaires selon le statut :");
+								listOfId=con.listeIdTable("industrie");
+								for(int j=0;j<listOfId.size();j++) {
+								System.out.println("L'entreprise : "+con.nameInTable(listOfId.get(j), "industrie")
+								+" offre comme salaire moyen a ses cadres : "+df.format(sal.salaire_cond("employe", "statut", "cadre",listOfId.get(j)))+" euros");
+								}
+								break; 
+								
+							default :
+								
+								break;
+						}
+						break;
+						
+					case 2 :
+						System.out.println("Sélectionnez le genre dont vous souhaitez comparer les salaires entre entreprises :"
+								+ "\n 1. Hommes"
+								+ "\n 2. Femmes");
+						switch(new Scanner(System.in).nextInt()) {
+							
+							case 1:
+								System.out.println("Comparaison des salaires selon le genre :");
+								listOfId=con.listeIdTable("industrie");
+								for(int j=0;j<listOfId.size();j++) {
+								System.out.println("L'entreprise : "+con.nameInTable(listOfId.get(j), "industrie")
+								+" offre comme salaire moyen a ses hommes : "+df.format(sal.salaire_cond("employe", "sexe", "M",listOfId.get(j)))+" euros");
+								}
+								break;
+							
+							case 2:
+								System.out.println("Comparaison des salaires selon le genre :");
+								listOfId=con.listeIdTable("industrie");
+								for(int j=0;j<listOfId.size();j++) {
+								System.out.println("L'entreprise : "+con.nameInTable(listOfId.get(j), "industrie")
+								+" offre comme salaire moyen a ses femmes : "+df.format(sal.salaire_cond("employe", "sexe", "F",listOfId.get(j)))+" euros");
+								}
+								break;
+								
+							default:
+								break;
+						}
+						
+						
+					default :
+						break;
+						
+				}
+			}while(userChoice2<3 && userChoice2>0);
+			break;
+		
+		case 5 :
+			System.out.println("Voulez-vous des statistiques avancées sur votre entreprise ou votre projet ?"
+					+ "\n1. Entreprise."
+					+ "\n2. Projet.");
+			switch(new Scanner(System.in).nextInt()) {
+			
+			case 1: 
+				ArrayList<Integer> listOfId = con.listeIdTable("industrie");
+				System.out.println("Veuillez sélectionnez votre entreprise :");
+				for(int j=0; j<listOfId.size();j++) {
+					System.out.println(listOfId.get(j)+". "+con.nameInTable(listOfId.get(j), "industrie"));
+				}
+				int userChoice3;
+				if(con.verifValiditeID(userChoice3 = new Scanner(System.in).nextInt(), "industrie")) {
+					superStatInd(userChoice3);
+					
+				}
+				
+				break;
+				
+			case 2 :
+				break;
+				
+			default:
+				break;
+				
+			}
+			break;
+		
 		default :
 			System.out.println("Fin de l'exécution.");
+			break;
     }
-        }while(i<4 && i>0);
+        }while(i<6 && i>0);
     }
 
     /**
@@ -325,72 +438,38 @@ public class Fonction {
         return resultStatement;
     }
     
+    /**Affiche les statistiques avancées pour une entreprise
+     * 
+     * @param idInd
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     * @author Loic
+     */
+    public static void superStatInd(int idInd) throws ClassNotFoundException, SQLException {
+    	int nbreEmploye=Integer.parseInt(con.recupResultatRequete("SELECT COUNT(id_emp) FROM employe INNER JOIN industrie ON (fk_id_ind=id_ind) WHERE id_ind="+idInd));
+    	int nbreEmployeM=Integer.parseInt(con.recupResultatRequete("SELECT COUNT(id_emp) FROM employe INNER JOIN industrie ON (fk_id_ind=id_ind) WHERE (sexe='M') AND id_ind="+idInd));
+    	int nbreEmployeF=Integer.parseInt(con.recupResultatRequete("SELECT COUNT(id_emp) FROM employe INNER JOIN industrie ON (fk_id_ind=id_ind) WHERE (sexe='F')AND id_ind="+idInd));
     
-    
-
-    public static double somme(){
-        System.out.println("Entrez le nombre de valeurs que vous souhaitez rentrer:");
-        Scanner scan = new Scanner(System.in);
-        double n = scan.nextDouble();
-        double val = 0;
-        int i = 0;
-        while (i<n){
-            System.out.println("Valeur nÂ°:"+ (i+1));
-            scan = new Scanner(System.in);
-            val += scan.nextFloat();
-            i+=1;
-        }
-        return((double)(val));
-    }
-
-
-
-    public static double moyenne(){
-        System.out.println("Entrez le nombre de valeurs que vous souhaitez rentrer:");
-        Scanner scan = new Scanner(System.in);
-        double n = scan.nextDouble();
-        double val = 0;
-        int i = 0;
-        while (i<n){
-            System.out.println("Valeur nÂ°:"+ (i+1) +"\n");
-            scan = new Scanner(System.in);
-            val += scan.nextDouble();
-            i+=1;
-        }
-        return((double)(val/n));
-    }
-
-
-    public static double carre(double val){
-        val*=val;
-        return (val);
-    }
-
-    public static double variance(){
-        double moy = 0;
-        System.out.println("Entrez le nombre de valeurs que vous souhaitez rentrer:");
-        Scanner scan = new Scanner(System.in);
-        double n = scan.nextDouble();
-        double val[]= null;
-        double somme = 0;
-        double resultat = 0;
-        int i = 0;
-        while (i<n){
-            System.out.println("Valeur nÂ°:"+ (i+1) +"\n");
-            scan = new Scanner(System.in);
-            val[i] = scan.nextDouble();
-            somme += val[i];
-            i+=1;
-        }
-        moy = (double)(somme/n);
-        for (i=0;i<n;i++){
-            resultat += carre((val[i]-moy));
-        }
-        return((double)(resultat/n));
-    }
-
-
-    public static double ecart_type(){
-        return(Math.sqrt((double)variance()));
+    	System.out.println("Votre entreprise compte : "+nbreEmploye+" employés");
+    	System.out.println("Parmis ces employés, vous comptez "+nbreEmployeM+" hommes ("+(((float)nbreEmployeM/(float)nbreEmploye)*100)+"%) et "+nbreEmployeF+" femmes ("+(((float)nbreEmployeF/(float)nbreEmploye)*100)+"%)");
+    	
+    	System.out.println("\t ........................... \t");
+    	System.out.println("Salaire moyen au sein de l'entreprise :"+sal.salaire_entreprise("employe", idInd));
+    	System.out.println("Salaire par statut : "
+    			+ "\n 1. Stagiaire : "+sal.salaire_cond("employe", "statut", "stagiaire", idInd)
+    			+" \n \t => Un stagiaire touche en moyenne "+((float)+sal.salaire_cond("employe", "statut", "stagiaire", idInd)/(float)sal.autre_salaire_cond("employe", "statut", "stagiaire", idInd))*100+"% que dans une autre entreprise"
+    			+" \n 2. Employe :"+sal.salaire_cond("employe", "statut", "employe", idInd )+" euros"
+    			+" \n \t => Un employe touche en moyenne "+((float)+sal.salaire_cond("employe", "statut", "employe", idInd)/(float)sal.autre_salaire_cond("employe", "statut", "employe", idInd))*100+"% que dans une autre entreprise"
+    			+" \n 3. Cadre : "+ sal.salaire_cond("employe", "statut", "cadre", idInd)+" euros"
+    			+" \n \t => Un cadre touche en moyenne "+((float)+sal.salaire_cond("employe", "statut", "cadre", idInd)/(float)sal.autre_salaire_cond("employe", "statut", "cadre", idInd))*100+"% que dans une autre entreprise");
+    	
+    	System.out.println("\t ........................... \t");	
+    	System.out.println("Un homme touche en moyenne "+sal.salaire_cond("employe", "sexe", "M", idInd)+" euros au sein de votre entreprise"
+    			+" \n \t => Une différence de "+((float)sal.salaire_cond("employe", "sexe", "M", idInd)/(float)sal.autre_salaire_cond("employe", "sexe", "M", idInd))*100+"% que dans une autre entreprise"
+    			+"\nUne femme touche en moyenne "+sal.salaire_cond("employe", "sexe", "F", idInd)+"  euros au sein de votre entreprise"
+    			+" \n \t => Une différence de "+((float)sal.salaire_cond("employe", "sexe", "F", idInd)/(float)sal.autre_salaire_cond("employe", "sexe", "F", idInd))*100+"% que dans une autre entreprise"
+    			+"\nIl ya une différence de "+((float)sal.salaire_cond("employe", "sexe", "M", idInd)/(float)sal.salaire_cond("employe", "sexe", "F", idInd))*100+"% entre le salaire d'un homme et d'une femme dans votre entreprise");
+    	
+    	
     }
 }

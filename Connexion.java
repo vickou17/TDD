@@ -319,6 +319,173 @@ public class Connexion {
         return validity;
     }
     
+    /**
+     * Methode qui compte le nombre d'élèments dans une table de la BDD
+     * @return 
+     * @throws java.sql.SQLException
+     * @author Loic
+     */
+    public int countElementInDB(String table) throws SQLException {
+    	int number=0;
+        // récupération de l'ordre de la requete
+    	switch(table) {
+    	
+    	case "industrie":
+        rset = stmt.executeQuery("SELECT COUNT(id_ind) FROM (industrie)");
+        System.out.println("OK");
+        break;
+        
+    	case "projet":
+    		rset = stmt.executeQuery("SELECT COUNT(id_projet) FROM (projet)");
+    		 System.out.println("OK");
+        break;
+        
+    	case "employe":
+    	rset = stmt.executeQuery("SELECT COUNT(id_emp )FROM employe");
+    	 System.out.println("OK");
+    	break;
+    	
+    	default:
+    		break;
+  
+    	}
+        // récupération du résultat de l'ordre
+    	rsetMeta = rset.getMetaData();
+
+        rset.next();
+        number= rset.getInt(1);
+
+        // tant qu'il reste une ligne 
+       
+
+        // Retourner l'ArrayList
+        return number;
+    }
+    
+    /**
+     * Methode qui compte le nombre d'élèments dans une table de la BDD
+     * @return 
+     * @throws java.sql.SQLException
+     * @author Loic
+     */
+    public int countElementInDBWithCond(String table) throws SQLException {
+    	int number=0;
+        // récupération de l'ordre de la requete
+    	switch(table) {
+    	
+    	case "industrie":
+        rset = stmt.executeQuery("SELECT COUNT(id_ind) FROM (industrie)");
+        System.out.println("OK");
+        break;
+        
+    	case "projet":
+    		rset = stmt.executeQuery("SELECT COUNT(id_projet) FROM (projet)");
+    		 System.out.println("OK");
+        break;
+        
+    	case "employe":
+    	rset = stmt.executeQuery("SELECT COUNT(id_emp )FROM employe");
+    	 System.out.println("OK");
+    	break;
+    	
+    	default:
+    		break;
+  
+    	}
+        // récupération du résultat de l'ordre
+    	rsetMeta = rset.getMetaData();
+
+        rset.next();
+        number= rset.getInt(1);
+
+        // tant qu'il reste une ligne 
+       
+
+        // Retourner l'ArrayList
+        return number;
+    }
+    
+    /**
+     * Renvoi la liste des ID d'une table
+     * @return 
+     * @throws java.sql.SQLException
+     * @author Loic
+     */
+    public ArrayList<Integer> listeIdTable(String table) throws SQLException {
+    	ArrayList<Integer> listeID = new ArrayList<Integer>();
+        // récupération de l'ordre de la requete
+    	switch(table) {
+    	
+    	case "industrie":
+        rset = stmt.executeQuery("SELECT id_ind FROM industrie");
+        break;
+        
+    	case "projet":
+    		rset = stmt.executeQuery("SELECT id_projet FROM (projet)");
+        break;
+        
+    	case "employe":
+    	rset = stmt.executeQuery("SELECT id_emp FROM employe");
+    	break;
+    	
+    	default:
+    		break;
+  
+    	}
+        // récupération du résultat de l'ordre
+    	rsetMeta = rset.getMetaData();
+
+    	while(rset.next()) {
+        listeID.add(rset.getInt(1));
+    	}
+
+        // tant qu'il reste une ligne 
+       
+
+        // Retourner l'ArrayList
+        return listeID;
+    }
+    
+    /**
+     * Renvoi le nom en fonction de l'ID d'une table
+     * @return 
+     * @throws java.sql.SQLException
+     * @author Loic
+     */
+    public String nameInTable(int id, String table) throws SQLException {
+    	String nameOfElement;
+        // récupération de l'ordre de la requete
+    	switch(table) {
+    	
+    	case "industrie":
+        rset = stmt.executeQuery("SELECT nom_ind FROM industrie WHERE id_ind="+id);
+        break;
+        
+    	case "projet":
+    		rset = stmt.executeQuery("SELECT nom_projet FROM (projet) WHERE id_projet="+id);
+        break;
+        
+    	case "employe":
+    	rset = stmt.executeQuery("SELECT nom FROM employe where id_emp="+id);
+    	break;
+    	
+    	default:
+    		break;
+  
+    	}
+        // récupération du résultat de l'ordre
+    	rsetMeta = rset.getMetaData();
+    	rset.next();
+        nameOfElement=rset.getString(1);
+    	
+
+        // tant qu'il reste une ligne 
+       
+
+        // Retourner l'ArrayList
+        return nameOfElement;
+    }
+    
  
     
     

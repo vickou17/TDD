@@ -611,6 +611,71 @@ public class Salaire {
         return(sal_moyen);
     }
     
+    /**
+     * Permet d'afficher le salaire moyen selon le genre ou le statut dans les autres entreprises que celle sélectionée
+     * 
+     *@author Loic
+     *Ecriture
+     */
+    public double autre_salaire_cond(String nomTable, String condColumnName, String condColumnInput, int id) throws SQLException, ClassNotFoundException {
+        con = new Connexion("db_tdd","root","");
+        double sal=0, sal_moyen=0;
+        
+        try {
+            ArrayList<String> heure;
+            ArrayList<String> statut;
+            
+            int n=0;
+            
+            String choice="WHERE "+condColumnName+"='"+condColumnInput+"' AND fk_id_ind !="+id;
+            
+            String requeteSelectionnee = "select nb_heure from " + nomTable + " "+choice+";";
+            heure = con.remplirChampsRequete(requeteSelectionnee);
+            
+            String reqSelectionnee = "select statut from " + nomTable+ " "+choice+";";
+            statut = con.remplirChampsRequete(reqSelectionnee);
+
+            
+            for(int i = 0; i < heure.size(); i++)
+            {
+
+                Scanner st = new Scanner(heure.get(i));
+                while (!st.hasNextDouble())
+                {
+                    st.next();
+                }
+                switch (statut.get(i)) {
+                case "Stagiaire\n" :
+                	sal += Double.parseDouble(heure.get(i))*3.75;
+                	n+=1;
+                    break;
+                    
+                case "Employe\n" :
+                	 sal += Double.parseDouble(heure.get(i))*7.93;
+                	 n+=1;
+                     break;
+                     
+                case "Cadre\n" :
+                	sal += Double.parseDouble(heure.get(i))*9.13;
+                	n+=1;
+                    break;
+                
+                default : 
+                	System.out.println("Erreur");
+                	break;
+                
+            }    
+                
+            }
+            sal_moyen = (sal/n);
+         
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+        return(sal_moyen);
+    }
     
 
 }
