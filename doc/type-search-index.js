@@ -1,0 +1,1 @@
+typeSearchIndex = [{"p":"Model","l":"Album"},{"l":"All Classes","url":"allclasses-index.html"},{"p":"Model","l":"Artist"},{"p":"Controller","l":"Cache"},{"p":"Controller","l":"Connexion"},{"p":"View","l":"Graphique"},{"p":"Controller","l":"Main"},{"p":"Model","l":"Music"}]
